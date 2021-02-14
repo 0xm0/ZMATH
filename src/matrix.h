@@ -93,31 +93,6 @@ template <typename T, int Rows, int Cols, typename CompatibleT>
 static inline CompatibleT ToTypeHelper(const Matrix<T, Rows, Cols>& m);
 
 
-template <class T>
-class Constants {
- public:
-  
-  static T GetDeterminantThreshold() {
-    assert(false);
-    return 0;
-  }
-};
-
-template <>
-class Constants<float> {
- public:
-  /// Effective uniform scale limit: ~(1/215)^3
-  static float GetDeterminantThreshold() { return 1e-7f; }
-};
-
-/// Functions that return constants for <code>double</code> values.
-template <>
-class Constants<double> {
- public:
-  /// Effective uniform scale limit: ~(1/100000)^3
-  static double GetDeterminantThreshold() { return 1e-15; }
-};
-
 template <class T, int Rows, int Cols>
 class Matrix {
  public:
@@ -137,24 +112,36 @@ class Matrix {
   /// Construct a Matrix from four floats.
   inline Matrix(T s00, T s10, T s01, T s11) {
     ZMATH_STATIC_ASSERT(Rows == 2 && Cols == 2);
+    data_[0] = Vector<T, Rows>(s00, s10);
+    data_[1] = Vector<T, Rows>(s01, s11);
   }
 
   /// Create a Matrix from nine floats.
 
   inline Matrix(T s00, T s10, T s20, T s01, T s11, T s21, T s02, T s12, T s22) {
     ZMATH_STATIC_ASSERT(Rows == 3 && Cols == 3);
+    data_[0] = Vector<T, Rows>(s00, s10, s20);
+    data_[1] = Vector<T, Rows>(s01, s11, s21);
+    data_[2] = Vector<T, Rows>(s02, s12, s22);
   }
 
   /// Creates a Matrix from twelve floats.
   inline Matrix(T s00, T s10, T s20, T s30, T s01, T s11, T s21, T s31, T s02,
                 T s12, T s22, T s32) {
     ZMATH_STATIC_ASSERT(Rows == 4 && Cols == 3);
+    data_[0] = Vector<T, Rows>(s00, s10, s20, s30);
+    data_[1] = Vector<T, Rows>(s01, s11, s21, s31);
+    data_[2] = Vector<T, Rows>(s02, s12, s22, s32);
   }
 
   /// Create a Matrix from sixteen floats.
   inline Matrix(T s00, T s10, T s20, T s30, T s01, T s11, T s21, T s31, T s02,
                 T s12, T s22, T s32, T s03, T s13, T s23, T s33) {
     ZMATH_STATIC_ASSERT(Rows == 4 && Cols == 4);
+    data_[0] = Vector<T, Rows>(s00, s10, s20, s30);
+    data_[1] = Vector<T, Rows>(s01, s11, s21, s31);
+    data_[2] = Vector<T, Rows>(s02, s12, s22, s32);
+    data_[3] = Vector<T, Rows>(s03, s13, s23, s33);
   }
 
   /// Create 4x4 Matrix from 4, 4 element vectors.
