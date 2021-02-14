@@ -118,6 +118,55 @@ class Constants<double> {
   static double GetDeterminantThreshold() { return 1e-15; }
 };
 
+template <class T, int Rows, int Cols>
+class Matrix {
+ public:
+
+  inline Matrix() {}
+
+  ///Construct a Matrix from another Matrix copying each element.
+  inline Matrix(const Matrix<T, Rows, Cols>& m) {
+    ZMATH_MAT_OPERATION(data_[i] = m.data_[i]);
+  }
+
+  /// Construct a Matrix from a single float.
+  explicit inline Matrix(T s) {
+    ZMATH_MAT_OPERATION((data_[i] = Vector<T, Rows>(s)));
+  }
+
+  /// Construct a Matrix from four floats.
+  inline Matrix(T s00, T s10, T s01, T s11) {
+    ZMATH_STATIC_ASSERT(Rows == 2 && Cols == 2);
+  }
+
+  /// Create a Matrix from nine floats.
+
+  inline Matrix(T s00, T s10, T s20, T s01, T s11, T s21, T s02, T s12, T s22) {
+    ZMATH_STATIC_ASSERT(Rows == 3 && Cols == 3);
+  }
+
+  /// Creates a Matrix from twelve floats.
+  inline Matrix(T s00, T s10, T s20, T s30, T s01, T s11, T s21, T s31, T s02,
+                T s12, T s22, T s32) {
+    ZMATH_STATIC_ASSERT(Rows == 4 && Cols == 3);
+  }
+
+  /// Create a Matrix from sixteen floats.
+  inline Matrix(T s00, T s10, T s20, T s30, T s01, T s11, T s21, T s31, T s02,
+                T s12, T s22, T s32, T s03, T s13, T s23, T s33) {
+    ZMATH_STATIC_ASSERT(Rows == 4 && Cols == 4);
+  }
+
+  /// Create 4x4 Matrix from 4, 4 element vectors.
+  inline Matrix(const Vector<T, 4>& column0, const Vector<T, 4>& column1,
+                const Vector<T, 4>& column2, const Vector<T, 4>& column3) {
+    ZMATH_STATIC_ASSERT(Rows == 4 && Cols == 4);
+    data_[0] = column0;
+    data_[1] = column1;
+    data_[2] = column2;
+    data_[3] = column3;
+  }
+
   /// Create a Matrix from the first row * column elements of an array.
 
   explicit inline Matrix(const T* const a) {
